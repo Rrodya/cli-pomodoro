@@ -20,6 +20,7 @@ const (
 	workEmoji  = "🍅"
 	breakEmoji = "☕"
 	pauseEmoji = "⏸️"
+	playEmoji  = "▶️"
 )
 
 var colors = map[string]string{
@@ -80,7 +81,7 @@ func main() {
 		config := TimeConfig{
 			Session:       session,
 			TotalSessions: *sessionCount,
-			Duration:      *workTime,
+			Duration:      *workTime * 60,
 			Mode:          "work",
 		}
 
@@ -90,7 +91,7 @@ func main() {
 		}
 
 		config.Mode = "break"
-		config.Duration = *breakTime
+		config.Duration = *breakTime * 60
 
 		if session < *sessionCount {
 			beeep.Alert("CLI Pomodoro", "Работа закончилась! Время отдыха!", "")
@@ -132,6 +133,12 @@ func runTimer(config TimeConfig, commandChan <-chan string) bool {
 			case "exit":
 				return false
 			case "pause":
+				if isPaused {
+					beeep.Alert("CLI Pomodoro", playEmoji+" Таймер запущен.", "")
+				} else {
+					beeep.Alert("CLI Pomodoro", pauseEmoji+" Таймер на паузе.", "")
+
+				}
 				isPaused = !isPaused
 			}
 		case <-ticker.C:
