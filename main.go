@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/eiannone/keyboard"
+	"github.com/gen2brain/beeep"
 )
 
 const (
@@ -92,8 +93,10 @@ func main() {
 		config.Duration = *breakTime
 
 		if session < *sessionCount {
+			beeep.Alert("CLI Pomodoro", "Работа закончилась! Время отдыха!", "")
 			fmt.Printf("\n\nРабота закончилась! Время отдыха\n\n")
 		} else {
+			beeep.Alert("CLI Pomodoro", "🎉 Все сессии завершены!", "")
 			fmt.Printf("\n\n🎉 Все сессии завершены!\n")
 		}
 
@@ -102,6 +105,7 @@ func main() {
 				fmt.Printf("\n\nТаймер остановлен! До скорого!")
 				break
 			}
+			beeep.Alert("CLI Pomodoro", "Отдых закончился! Время работы", "")
 			fmt.Printf("\n\nОтдых закончился! Время работы\n\n")
 		}
 	}
