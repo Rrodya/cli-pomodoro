@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	figure "github.com/common-nighthawk/go-figure"
 	"github.com/eiannone/keyboard"
 	"github.com/gen2brain/beeep"
 )
@@ -51,8 +52,6 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Printf("Кол-во сессий: %d\n\n", *sessionCount)
-
 	if err := keyboard.Open(); err != nil {
 		panic(err)
 	}
@@ -77,6 +76,12 @@ func main() {
 		}
 	}()
 
+	myFigure := figure.NewColorFigure("  POMO", "slant", "green", true)
+	myFigure.Print()
+
+	fmt.Printf("\n\n   Работа: %d мин | Перерыв: %d мин | Сессий: %d\n\n", *workTime, *breakTime, *sessionCount)
+	fmt.Printf("   [P] Пауза | [Esc] Выход\n\n")
+
 	for session := 1; session <= *sessionCount; session++ {
 		config := TimeConfig{
 			Session:       session,
@@ -86,7 +91,7 @@ func main() {
 		}
 
 		if !runTimer(config, command) {
-			fmt.Printf("\n\nТаймер остановлен! До скорого!")
+			fmt.Printf("\n\n    Таймер остановлен! До скорого!")
 			break
 		}
 
@@ -95,19 +100,31 @@ func main() {
 
 		if session < *sessionCount {
 			beeep.Alert("CLI Pomodoro", "Работа закончилась! Время отдыха!", "")
-			fmt.Printf("\n\nРабота закончилась! Время отдыха\n\n")
+			fmt.Printf("\n\n    Работа закончилась! Время отдыха\n\n")
 		} else {
 			beeep.Alert("CLI Pomodoro", "🎉 Все сессии завершены!", "")
-			fmt.Printf("\n\n🎉 Все сессии завершены!\n")
+			fmt.Printf("\n\n    🎉 Отлично! Выполнено %d помодоро\n", *sessionCount)
+
+			totalTime := *workTime * *sessionCount
+			hours := totalTime / 60
+			minutes := totalTime % 60
+			if hours > 0 && minutes > 0 {
+				fmt.Printf("\n    Общее время работы: %dч %dмин", hours, minutes)
+			} else if hours > 0 && minutes == 0 {
+				fmt.Printf("\n    Общее время работы: %dч", hours)
+			} else if hours == 0 && minutes > 0 {
+				fmt.Printf("\n    Общее время работы: %dмин", minutes)
+			}
+
 		}
 
 		if session < *sessionCount {
 			if !runTimer(config, command) {
-				fmt.Printf("\n\nТаймер остановлен! До скорого!")
+				fmt.Printf("\n\n    Таймер остановлен! До скорого!")
 				break
 			}
 			beeep.Alert("CLI Pomodoro", "Отдых закончился! Время работы", "")
-			fmt.Printf("\n\nОтдых закончился! Время работы\n\n")
+			fmt.Printf("\n\n    Отдых закончился! Время работы\n\n")
 		}
 	}
 
@@ -179,7 +196,7 @@ func runTimer(config TimeConfig, commandChan <-chan string) bool {
 			}
 
 			fmt.Printf(
-				"\033[2K\r%s%s ["+"%s"+
+				"\033[2K\r   %s%s ["+"%s"+
 					strings.Repeat(
 						filledSimbolProgress, int(filledProgressPart))+
 					strings.Repeat(emptySimbolProgress, emptyProgressPart)+"%s"+

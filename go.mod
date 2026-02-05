@@ -2,12 +2,15 @@ module github.com/rrodya/cli-pomodoro
 
 go 1.25.0
 
-require github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
+require (
+	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
+	github.com/eiannone/keyboard v0.0.0-20220611211555-0d226195f203
+	github.com/gen2brain/beeep v0.11.2
+)
 
 require (
 	git.sr.ht/~jackmordaunt/go-toast v1.1.2 // indirect
 	github.com/esiqveland/notify v0.13.3 // indirect
-	github.com/gen2brain/beeep v0.11.2 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/jackmordaunt/icns/v3 v3.0.1 // indirect
